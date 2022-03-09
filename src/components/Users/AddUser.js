@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
 import Card from "../UI/Card";
 import Button from "../UI/Button";
@@ -7,6 +7,12 @@ import Wrapper from "../Helpers/Wrapper";
 import classes from "./AddUser.module.css";
 
 const AddUser = (props) => {
+  /**
+   * useRef Hook
+   */
+  const nameInputRef = useRef();
+  const ageInputRef = useRef();
+
   /* useState Hook
   useState Hook always returns an array with exactly two elements
   and with this syntax (array de-structuring), we're pulling these elements
@@ -16,24 +22,26 @@ const AddUser = (props) => {
   and [setEnteredUsername] on the other hand holds a function which we can call,
   to change that state and to then trigger such a render cycle.
    */
-  const [enteredUsername, setEnteredUsername] = useState("");
-  const [enteredAge, setEnteredAge] = useState("");
+  // const [enteredUsername, setEnteredUsername] = useState("");
+  // const [enteredAge, setEnteredAge] = useState("");
 
   // ErrorModal useState(); Hook
   const [error, setError] = useState();
 
   const addUserHandler = (event) => {
     event.preventDefault();
+    const enteredName = nameInputRef.current.value;
+    const enteredUserAge = ageInputRef.current.value;
 
     // Vaildation
-    if (enteredUsername.trim().length === 0 || enteredAge.trim().length === 0) {
+    if (enteredName.trim().length === 0 || enteredUserAge.trim().length === 0) {
       setError({
         title: "Invalid input 💥",
         message: "Please enter a valid name and age (non-empty values) 😱",
       });
       return;
     }
-    if (+enteredAge < 1) {
+    if (+enteredUserAge < 1) {
       setError({
         title: "Invalid age 💥",
         message: "Please enter a valid age ( > 0) 😱",
@@ -42,20 +50,28 @@ const AddUser = (props) => {
     }
 
     // addUserHandler which passed through props from the App.js file
-    props.onAddUser(enteredUsername, enteredAge);
+    props.onAddUser(enteredName, enteredUserAge);
+
+    /* please do consider NOT to do this in the future because this is not a good
+    practice to manipulate the DOM you should let React do all the heavy lifting
+    and manipulate the DOM for you, which in our case here we want to clear the 
+    inputs after being added, but we are doing this now only to practice useRef Hook
+    */
+    nameInputRef.current.value = "";
+    ageInputRef.current.value = "";
 
     // resetting input fields back to empty
-    setEnteredUsername("");
-    setEnteredAge("");
+    // setEnteredUsername("");
+    // setEnteredAge("");
   };
 
-  const usernameChangeHandler = (event) => {
-    setEnteredUsername(event.target.value);
-  };
+  // const usernameChangeHandler = (event) => {
+  //   setEnteredUsername(event.target.value);
+  // };
 
-  const ageChangeHandler = (event) => {
-    setEnteredAge(event.target.value);
-  };
+  // const ageChangeHandler = (event) => {
+  //   setEnteredAge(event.target.value);
+  // };
 
   const errorHandler = () => {
     // to set it from an object to null, null is treated as a falsy value
@@ -83,15 +99,17 @@ const AddUser = (props) => {
           <input
             id="username"
             type="text"
-            value={enteredUsername}
-            onChange={usernameChangeHandler}
+            // value={enteredUsername}
+            // onChange={usernameChangeHandler}
+            ref={nameInputRef}
           />
           <label htmlFor="age">Age (Years)</label>
           <input
             id="age"
             type="number"
-            value={enteredAge}
-            onChange={ageChangeHandler}
+            // value={enteredAge}
+            // onChange={ageChangeHandler}
+            ref={ageInputRef}
           />
           <Button type="submit">Add User</Button>
         </form>
