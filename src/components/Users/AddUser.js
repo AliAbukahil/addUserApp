@@ -28,7 +28,8 @@ const AddUser = (props) => {
       return;
     }
 
-    console.log(enteredUsername, enteredAge);
+    // addUserHandler which passed through props from the App.js file
+    props.onAddUser(enteredUsername, enteredAge);
 
     // resetting input fields back to empty
     setEnteredUsername("");
@@ -38,6 +39,7 @@ const AddUser = (props) => {
   const usernameChangeHandler = (event) => {
     setEnteredUsername(event.target.value);
   };
+
   const ageChangeHandler = (event) => {
     setEnteredAge(event.target.value);
   };
